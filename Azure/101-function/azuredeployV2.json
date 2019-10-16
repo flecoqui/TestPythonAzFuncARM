@@ -276,6 +276,10 @@
               "value": "~2"
             },
             {
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "8.11.1"
+            },
+            {
               "name": "FUNCTIONS_WORKER_RUNTIME",
               "value": "python"
             },
@@ -286,6 +290,18 @@
             {
               "name": "AzureWebJobsStorage",
               "value": "[concat('DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=', variables('storageName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageName')),'2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageName'), ';AccountKey=', listKeys(variables('storageName'),'2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(variables('azFunctionName'))]"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('microsoft.insights/components/', variables('azFunctionInsightName')), '2015-05-01').InstrumentationKey]"
             }
           ]
         }
@@ -314,6 +330,9 @@
       "name": "[variables('azFunctionInsightName')]",
       "location": "[resourceGroup().location]",
       "kind": "web",
+      "tags": {
+        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('azFunctionName'))]": "Resource"
+      },
       "properties": {
         "Application_Type": "web",
         "Flow_Type": "Redfield",
