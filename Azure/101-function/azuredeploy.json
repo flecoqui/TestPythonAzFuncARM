@@ -95,22 +95,22 @@
           "maximumAge": 5
         },
         "networkAcls": {
-        "bypass": "AzureServices",
-                  "virtualNetworkRules": [],
-                  "ipRules": [],
-                  "defaultAction": "Allow"
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
         },
         "supportsHttpsTrafficOnly": false,
         "encryption": {
-                  "services": {
-                      "file": {
-                          "enabled": true
-                      },
-                      "blob": {
-                          "enabled": true
-                      }
-                  },
-                  "keySource": "Microsoft.Storage"
+          "services": {
+            "file": {
+              "enabled": true
+            },
+            "blob": {
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
         }
 
       },
@@ -178,12 +178,36 @@
       }
     },
     {
+      "type": "Microsoft.Web/serverfarms",
+      "sku": {
+        "name": "[toLower(parameters('azFunctionAppSku'))]",
+        "tier": "Dynamic",
+        "size": "Y1",
+        "family": "Y",
+        "capacity": 0
+
+      },
+      "kind": "functionapp",
+      "name": "[variables('azFunctionPlanName')]",
+      "apiVersion": "2016-09-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "name": "[variables('azFunctionPlanName')]",
+        "perSiteScaling": false,
+        "reserved": true,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0
+      },
+      "dependsOn": []
+    },
+    {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2016-08-01",
       "name": "[variables('azFunctionName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]"
       ],
       "kind": "functionapp",
       "properties": {
@@ -238,9 +262,22 @@
       "location": "[resourceGroup().location]",
       "kind": "web",
       "properties": {
-          "Application_Type": "web",
-          "Flow_Type": "Redfield",
-          "Request_Source": "AppServiceEnablementCreate"
+        "Application_Type": "web",
+        "Flow_Type": "Redfield",
+        "Request_Source": "AppServiceEnablementCreate"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(variables('azFunctionName'), '/', variables('azFunctionName'), '.azurewebsites.net')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('azFunctionName'))]"
+      ],
+      "properties": {
+        "siteName": "[variables('azFunctionName')]",
+        "hostNameType": "Verified"
       }
     }
   ],
