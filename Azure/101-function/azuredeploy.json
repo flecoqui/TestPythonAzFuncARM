@@ -263,9 +263,9 @@
         "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]"
       ],
       "kind": "functionapp",
-      "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]",
       "properties": {
         "enabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]",
         "siteConfig": {
           "appSettings": [
             {
