@@ -1,0 +1,36 @@
+
+python -m venv .venv
+.venv\scripts\activate
+func host start
+pip install -r requirements.txt
+
+python -m flask run
+
+curl -H "Content-Type: application/json"  -X GET  "http://127.0.0.1:5000/"
+curl -d "{\"param1\":\"0123456789\",\"param2\":\"abcdef\"}" -H "Content-Type: application/json"  -X POST  "http://127.0.0.1:5000/"
+
+curl  -X GET http://127.0.0.1:5000/api/HttpTriggerPythonFunction
+
+curl  -X GET "http://127.0.0.1:5000/api/HttpTriggerPythonFunction?param1=tt&param2=eeee"
+curl  -d "{\"param1\":\"0123456789\",\"param2\":\"abcdef\"}" -H "Content-Type: application/json" -X GET "http://127.0.0.1:5000/api/HttpTriggerPythonFunction?param1=tt&param2=eeee"
+curl  -d "{\"param1\":\"0123456789\",\"param2\":\"abcdef\"}" -H "Content-Type: application/json" -X GET "http://127.0.0.1:5000/api/HttpTriggerPythonFunction"
+
+/api/HttpTriggerPythonFunction
+*
+
+
+az group create -n testpytoncontainerrg -l eastus2
+az group delete -n testpytoncontainerrg 
+
+curl  -X GET "http://testrestaci.eastus2.azurecontainer.io/api/HttpTriggerPythonFunction?param1=tt&param2=eeee"
+curl  -X GET http://127.0.0.1/api/HttpTriggerPythonFunction
+curl  -X GET "http://127.0.0.1/api/HttpTriggerPythonFunction?param1=tt&param2=eeee"
+curl -d "{\"param1\":\"0123456789\",\"param2\":\"abcdef\"}" -H "Content-Type: application/json"   -X POST "http://testrestaci.eastus2.azurecontainer.io/api/HttpTriggerPythonFunction"
+
+az acr task run  -n testwebapplinuxtask -r testrestacr
+
+az group deployment create -g testpythoncontainerrg -n testrestacidep --template-file azuredeploy.aci.json --parameter namePrefix=testrest imageName=testwebapp.linux  appId=b79f91aa-508e-427b-8121-3b855c72d96f  password=8665dafd-321a-4a18-a552-cb37abd3c994  cpuCores=2 memoryInGb=7 --verbose -o json
+
+az container create -g testpythoncontainerrg --name testrestaci --image testrestacr.azurecr.io/testwebapp.linux:v1 --command-line "tail -f /dev/null" --registry-username b79f91aa-508e-427b-8121-3b855c72d96f  --registry-password 8665dafd-321a-4a18-a552-cb37abd3c994
+
+
