@@ -233,19 +233,18 @@
     {
       "type": "Microsoft.Web/serverfarms",
       "sku": {
-        "name": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].name]",
+        "name": "[toLower(variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].name)]",
         "tier": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].tier]",
         "size": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].size]",
         "family": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].family]",
         "capacity": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].capacity]"
-
       },
       "kind": "functionapp",
       "name": "[variables('azFunctionPlanName')]",
       "apiVersion": "2016-09-01",
       "location": "[resourceGroup().location]",
       "properties": {
-        "name": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].name]",
+        "name": "[variables('azFunctionPlanName')]",
         "perSiteScaling": false,
         "reserved": false,
         "targetWorkerCount": 0,
