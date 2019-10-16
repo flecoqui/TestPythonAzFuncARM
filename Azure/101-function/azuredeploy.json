@@ -337,7 +337,7 @@
   "outputs": {
     "curlCmdAzFunction1": {
       "type": "string",
-      "value": "[concat('curl -d \"{\"param1\":\"0123456789\",\"param2\":\"abcdef\"}\" -H \"Content-Type: application/json\"  -X POST   \"https://',variables('azFunctionName'),'.azurewebsites.net/api/HttpTriggerPythonFunction\"')]"
+      "value": "[concat('curl -d \"{\\\"param1\\\":\\\"0123456789\\\",\\\"param2\\\":\\\"abcdef\\\"}\" -H \"Content-Type: application/json\"  -X POST   \"https://',variables('azFunctionName'),'.azurewebsites.net/api/HttpTriggerPythonFunction\"')]"
     },
     "curlCmdAzFunction2": {
       "type": "string",
