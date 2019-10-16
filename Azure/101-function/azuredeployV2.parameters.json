@@ -1,0 +1,24 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "namePrefix": {
+      "value": "testpyarm"
+    },
+    "azFunctionAppSku": {
+      "value": "Y1"
+    },
+    "storageSku": {
+      "value": "Standard_LRS"
+    },
+    "repoURL": {
+      "value": "https://github.com/flecoqui/TestPythonAzFuncARM.git"
+    },
+    "repoBranch": {
+      "value": "master"
+    },
+    "repoFunctionPath": {
+      "value": "PythonFunctionV2"
+    }
+  }
+}
