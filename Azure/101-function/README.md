@@ -1,13 +1,22 @@
-# Deployment of a REST API  hosted on Azure Function
+# Deployment of a REST API  hosted on Azure Function V1 and V2
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2FTestPythonAzFunc%2Fmaster%2FAzure%2F101-function%2Fazuredeploy.json" target="_blank">
+Azure Function V1
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2FTestPythonAzFuncARM%2Fmaster%2FAzure%2F101-function%2FazuredeployV1.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2FTestPythonAzFunc%2Fmaster%2FAzure%2F101-function%2Fazuredeploy.json" target="_blank">
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2FTestPythonAzFuncARM%2Fmaster%2FAzure%2F101-function%2FazuredeployV1.json" target="_blank">
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-This template allows you to deploy from Github a Python REST API hosted on Azure Function. Moreover, the REST API service will be directly deployed from github towards Azure Function.
+Azure Function V2
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2FTestPythonAzFuncARM%2Fmaster%2FAzure%2F101-function%2FazuredeployV2.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
+</a>
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2FTestPythonAzFuncARM%2Fmaster%2FAzure%2F101-function%2FazuredeployV2.json" target="_blank">
+    <img src="http://armviz.io/visualizebutton.png"/>
+</a>
+
+This template allows you to deploy from Github a Python REST API hosted on Azure Function V1 and maybe V2. Moreover, the REST API service will be directly deployed from github towards Azure Function.
 
 The REST API (api/HttpTriggerPythonFunction) is actually an JSON echo service with two paramaters (param1, param2), if you send a Json string in the http content, you will receive the same Json string in the http response.
 Below a curl command line to send the request.
@@ -21,9 +30,6 @@ GET Request:
 
 
           curl -H "Content-Type: application/json"  -X GET   https://<hostname>/api/HttpTriggerPythonFunction?param1=0123456789&param2=abcdef
-
-
-
 
 
 
@@ -53,23 +59,23 @@ For instance:
 
 ## DEPLOY THE SERVICES:
 
-### DEPLOY REST API ON AZURE FUNCTION, APP SERVICE, VIRTUAL MACHINE:
+### DEPLOY REST API ON AZURE FUNCTION V1:
 You can deploy Azure Function, Azure App Service and Virtual Machine using ARM (Azure Resource Manager) Template and Azure CLI v1 or v2
 
-* **Azure CLI 1.0:** azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json*
+* **Azure CLI 1.0:** azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeployV1.json -e azuredeployV1.parameters.json*
 
-* **Azure CLI 2.0:** az group deployment create -g "ResourceGroupName" -n "DeploymentName" --template-file "templatefile.json" --parameters @"templatefile.parameter..json"  --verbose -o json
+* **Azure CLI 2.0:** az group deployment create -g "ResourceGroupName" -n "DeploymentName" --template-file "azuredeployV1.json" --parameters @"azuredeployV1.parameters.json"  --verbose -o json
 
 For instance:
 
-    azure group deployment create testpythonazfuncrg testpythonazfuncdep -f azuredeploy.json -e azuredeploy.parameters.json -vv
+    azure group deployment create testpythonazfuncrg testpythonazfuncdep -f azuredeployV1.json -e azuredeployV1.parameters.json -vv
 
-    az group deployment create -g testpythonazfuncrg -n testpythonazfuncdep --template-file azuredeploy.json --parameter @azuredeploy.parameters.json --verbose -o json
+    az group deployment create -g testpythonazfuncrg -n testpythonazfuncdep --template-file azuredeployV1.json --parameter @azuredeployV1.parameters.json --verbose -o json
 
 
 When you deploy the service you can define the following parameters:</p>
 * **namePrefix:** The name prefix which will be used for all the services deployed with this ARM Template</p>
-* **azFunctionAppSku:** The Azure Function App Sku Capacity, by defualt S1</p>
+* **azFunctionAppSku:** The Azure Function App Sku Capacity, by defualt Y1</p>
 * **storageSku:** The Azure Storage Sku Capacity, by default Standard_LRS</p>
 * **repoURL:** The github repository url</p>
 * **branch:** The branch name in the repository</p>
@@ -78,6 +84,30 @@ When you deploy the service you can define the following parameters:</p>
 
 The services has been deployed with 2 command lines.
 
+### DEPLOY REST API ON AZURE FUNCTION V2:
+You can deploy Azure Function, Azure App Service and Virtual Machine using ARM (Azure Resource Manager) Template and Azure CLI v1 or v2
+
+* **Azure CLI 1.0:** azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeployV2.json -e azuredeployV2.parameters.json*
+
+* **Azure CLI 2.0:** az group deployment create -g "ResourceGroupName" -n "DeploymentName" --template-file "azuredeployV2.json" --parameters @"azuredeployV2.parameters.json"  --verbose -o json
+
+For instance:
+
+    azure group deployment create testpythonazfuncrg testpythonazfuncdep -f azuredeployV2.json -e azuredeployV2.parameters.json -vv
+
+    az group deployment create -g testpythonazfuncrg -n testpythonazfuncdep --template-file azuredeployV2.json --parameter @azuredeployV2.parameters.json --verbose -o json
+
+
+When you deploy the service you can define the following parameters:</p>
+* **namePrefix:** The name prefix which will be used for all the services deployed with this ARM Template</p>
+* **azFunctionAppSku:** The Azure Function App Sku Capacity, by defualt Y1</p>
+* **storageSku:** The Azure Storage Sku Capacity, by default Standard_LRS</p>
+* **repoURL:** The github repository url</p>
+* **branch:** The branch name in the repository</p>
+* **repoFunctionPath:** The path to the Azure Function code, by default "TestFunctionApp"</p>
+
+
+The services has been deployed with 2 command lines.
 
 # TEST THE SERVICES:
 
