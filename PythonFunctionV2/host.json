@@ -1,13 +1,17 @@
 {
   "version": "2.0",
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[1.*, 2.0.0)"
+  },
   "managedDependency": {
     "enabled": true
   },
-    "logging": {
-      "logLevel": {
-          "default": "Information",
-          "MyFunction.OnFunction": "Trace"
-      },
-      "fileLoggingMode": "always"
+  "logging": {
+    "logLevel": {
+      "default": "Information",
+      "MyFunction.OnFunction": "Trace"
+    },
+    "fileLoggingMode": "always"
   }
 }
