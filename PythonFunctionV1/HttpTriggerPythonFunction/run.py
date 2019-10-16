@@ -1,5 +1,6 @@
 import os
 import json
+import urllib.parse
 
 _AZURE_FUNCTION_DEFAULT_METHOD = "GET"
 _AZURE_FUNCTION_HTTP_INPUT_ENV_NAME = "req"
@@ -28,16 +29,50 @@ req_url = env['REQ_HEADERS_X-ORIGINAL-URL'] if 'REQ_HEADERS_X-ORIGINAL-URL' in e
 urlparts =req_url.split('?') 
 query_string = urlparts[1] if len(urlparts) == 2 else ''
 print("QUERY STRING => {}".format(query_string))
-
-if http_method.lower() == 'post':
-    request_body = open(env[_AZURE_FUNCTION_HTTP_INPUT_ENV_NAME], "r").read()
-    print("REQUEST BODY => {}".format(request_body))
+params = urllib.parse.parse_qs(query_string)
 
 res_body = {}
-print("Dump ENVIRONMENT VARIABLES:")
-for k in env:
-    print("ENV: {0} => {1}".format(k, env[k]))
-    if (k.startswith(_REQ_PREFIX)):
-        res_body[k] = env[k]
 
-write_http_response(200, res_body)
+if http_method.lower() == 'post':
+    req_body = open(env[_AZURE_FUNCTION_HTTP_INPUT_ENV_NAME], "r").read()
+    print("REQUEST BODY => {}".format(request_body))
+
+param1 = params.get('param1')
+if not param1:
+    try:
+        logging.info('Python HTTP trigger try')
+        req_body = req.get_json()
+    except ValueError:
+        pass
+    else:
+        param1 = req_body.get('param1')
+
+if param1:
+    param2 = req.params.get('param2')
+    if not param2:
+        try:
+            logging.info('Python HTTP trigger try')
+            req_body = req.get_json()
+        except ValueError:
+            pass
+        else:
+            param2 = req_body.get('param2')
+
+    if param2:
+        res_body["Error"] = f"Param1: {param1} Param2: {param2}"
+        write_http_response(200, res_body)
+    else:
+        res_body["Error"] = "Please pass param2 on the query string or in the request body"
+        write_http_response(400, res_body)
+else:
+    res_body["Error"] = "Please pass param1 on the query string or in the request body"
+    write_http_response(400, res_body)
+
+# res_body = {}
+# print("Dump ENVIRONMENT VARIABLES:")
+# for k in env:
+#     print("ENV: {0} => {1}".format(k, env[k]))
+#     if (k.startswith(_REQ_PREFIX)):
+#         res_body[k] = env[k]
+
+# write_http_response(200, res_body)
