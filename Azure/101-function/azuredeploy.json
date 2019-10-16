@@ -18,15 +18,10 @@
         "F1",
         "Y1",
         "B1",
-        "B2",
-        "B3",
         "S1",
-        "S2",
-        "S3",
         "P1",
-        "P2",
-        "P3",
-        "P4"
+        "P1V2"
+
       ],
       "metadata": {
         "description": "The SKU of the Azure Function you want to create."
@@ -72,7 +67,65 @@
     "azFunctionPlanName": "[concat(parameters('namePrefix'), 'functplan')]",
     "azFunctionName": "[concat(parameters('namePrefix'), 'function')]",
     "azFunctionInsightName": "[concat(parameters('namePrefix'), 'insight')]",
-    "storageName": "[concat(parameters('namePrefix'), 'storage')]"
+    "storageName": "[concat(parameters('namePrefix'), 'storage')]",
+    "azFuncSku": {
+      "y1": {
+        "name": "Y1",
+        "tier": "Dynamic",
+        "size": "Y1",
+        "family": "Y",
+        "capacity": 0
+      },
+      "d1": {
+        "name": "D1",
+        "tier": "Shared",
+        "size": "D1",
+        "family": "D",
+        "capacity": 0
+      },
+      "f1": {
+        "name": "F1",
+        "tier": "Free",
+        "size": "F1",
+        "family": "F",
+        "capacity": 0
+      },
+      "b1": {
+        "name": "B1",
+        "tier": "Basic",
+        "size": "B1",
+        "family": "B",
+        "capacity": 0
+      },
+      "s1": {
+        "name": "S1",
+        "tier": "Standard",
+        "size": "S1",
+        "family": "S",
+        "capacity": 0
+      },
+      "p1": {
+        "name": "P1",
+        "tier": "Premium",
+        "size": "P1",
+        "family": "P",
+        "capacity": 0
+      },
+      "p1v2": {
+        "name": "P1V2",
+        "tier": "PremiumV2",
+        "size": "P1V2",
+        "family": "PV2",
+        "capacity": 0
+      },
+      "i1": {
+        "name": "I1",
+        "tier": "Isolated",
+        "size": "I1",
+        "family": "I",
+        "capacity": 0
+      }
+    }
   },
   "resources": [
     {
@@ -180,11 +233,11 @@
     {
       "type": "Microsoft.Web/serverfarms",
       "sku": {
-        "name": "[toLower(parameters('azFunctionAppSku'))]",
-        "tier": "Dynamic",
-        "size": "Y1",
-        "family": "Y",
-        "capacity": 0
+        "name": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].name]",
+        "tier": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].tier]",
+        "size": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].size]",
+        "family": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].family]",
+        "capacity": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].capacity]"
 
       },
       "kind": "functionapp",
@@ -192,9 +245,9 @@
       "apiVersion": "2016-09-01",
       "location": "[resourceGroup().location]",
       "properties": {
-        "name": "[variables('azFunctionPlanName')]",
+        "name": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].name]",
         "perSiteScaling": false,
-        "reserved": true,
+        "reserved": false,
         "targetWorkerCount": 0,
         "targetWorkerSizeId": 0
       },
@@ -210,6 +263,7 @@
         "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]"
       ],
       "kind": "functionapp",
+      "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]",
       "properties": {
         "enabled": true,
         "siteConfig": {
