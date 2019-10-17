@@ -6,7 +6,7 @@
       "value": "testpyarm"
     },
     "azFunctionAppSku": {
-      "value": "Y1"
+      "value": "S1"
     },
     "storageSku": {
       "value": "Standard_LRS"
