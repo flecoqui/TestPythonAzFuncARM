@@ -37,12 +37,12 @@ if http_method.lower() == 'post':
     req_body = eval(open(env[_AZURE_FUNCTION_HTTP_INPUT_ENV_NAME], "r").read())
     print("REQUEST BODY => {}".format(req_body))
 
-param1 = params.get('param1')
+param1 = params.get('param1')[0]
 if not param1:
     param1 = req_body.get('param1')
 
 if param1:
-    param2 = params.get('param2')
+    param2 = params.get('param2')[0]
     if not param2:
         param2 = req_body.get('param2')
 
