@@ -180,11 +180,7 @@
       ],
       "properties": {
         "cors": {
-          "allowedHeaders": [ "*" ],
-          "allowedMethods": [ "get", "post", "put" ],
-          "allowedOrigins": [ "*" ],
-          "exposedHeaders": [ "*" ],
-          "maximumAge": 5
+          "corsRules": []
         },
         "deleteRetentionPolicy": {
           "enabled": false
@@ -341,7 +337,18 @@
               "value": "[reference(resourceId('microsoft.insights/components/', variables('azFunctionInsightName')), '2015-05-01').InstrumentationKey]"
             }
           ],
-          "linuxFxVersion": "DOCKER|mcr.microsoft.com/azure-functions/python:2.0-python3.6-appservice"
+          "linuxFxVersion": "DOCKER|mcr.microsoft.com/azure-functions/python:2.0-python3.6-appservice",
+          "numberOfWorkers": 1,
+          "use32BitWorkerProcess": true,
+          "alwaysOn": true,
+          "cors": {
+            "allowedOrigins": [
+              "https://functions.azure.com",
+              "https://functions-staging.azure.com",
+              "https://functions-next.azure.com"
+            ],
+            "supportCredentials": false
+          }
         }
       },
       "resources": [
