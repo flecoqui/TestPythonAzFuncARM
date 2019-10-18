@@ -81,49 +81,49 @@
         "tier": "Shared",
         "size": "D1",
         "family": "D",
-        "capacity": 0
+        "capacity": 1
       },
       "f1": {
         "name": "F1",
         "tier": "Free",
         "size": "F1",
         "family": "F",
-        "capacity": 0
+        "capacity": 1
       },
       "b1": {
         "name": "B1",
         "tier": "Basic",
         "size": "B1",
         "family": "B",
-        "capacity": 0
+        "capacity": 1
       },
       "s1": {
         "name": "S1",
         "tier": "Standard",
         "size": "S1",
         "family": "S",
-        "capacity": 0
+        "capacity": 1
       },
       "p1": {
         "name": "P1",
         "tier": "Premium",
         "size": "P1",
         "family": "P",
-        "capacity": 0
+        "capacity": 1
       },
       "p1v2": {
         "name": "P1V2",
         "tier": "PremiumV2",
         "size": "P1V2",
         "family": "PV2",
-        "capacity": 0
+        "capacity": 1
       },
       "i1": {
         "name": "I1",
         "tier": "Isolated",
         "size": "I1",
         "family": "I",
-        "capacity": 0
+        "capacity": 1
       }
     }
   },
@@ -239,14 +239,14 @@
         "family": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].family]",
         "capacity": "[variables('azFuncSku')[toLower(parameters('azFunctionAppSku'))].capacity]"
       },
-      "kind": "functionapp",
+      "kind": "linux",
       "name": "[variables('azFunctionPlanName')]",
       "apiVersion": "2016-09-01",
       "location": "[resourceGroup().location]",
       "properties": {
         "name": "[variables('azFunctionPlanName')]",
         "perSiteScaling": false,
-        "reserved": false,
+        "reserved": true,
         "targetWorkerCount": 0,
         "targetWorkerSizeId": 0
       },
@@ -259,12 +259,33 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
-        "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]",
+        "[resourceId('Microsoft.Insights/components', variables('azFunctionInsightName'))]"
       ],
-      "kind": "functionapp",
+      "kind": "functionapp,linux,container",
       "properties": {
         "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('azFunctionName'), '.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('azFunctionName'), '.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "hostType": "Repository"
+          }
+        ],
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]",
+        "reserved": true,
+        "scmSiteAlsoStopped": false,
+        "clientAffinityEnabled": false,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 0,
+        "dailyMemoryTimeQuota": 0,
+        "httpsOnly": false,
         "siteConfig": {
           "appSettings": [
             {
@@ -277,7 +298,23 @@
             },
             {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",
-              "value": "8.11.1"
+              "value": "10.14.1"
+            },
+            {
+              "name": "BUILD_FLAGS",
+              "value": "UseExpressBuild"
+            },
+            {
+              "name": "ENABLE_ORYX_BUILD",
+              "value": "true"
+            },
+            {
+              "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+              "value": "1"
+            },
+            {
+              "name": "XDG_CACHE_HOME",
+              "value": "/tmp/.cache"
             },
             {
               "name": "FUNCTIONS_WORKER_RUNTIME",
@@ -303,7 +340,8 @@
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
               "value": "[reference(resourceId('microsoft.insights/components/', variables('azFunctionInsightName')), '2015-05-01').InstrumentationKey]"
             }
-          ]
+          ],
+          "linuxFxVersion": "DOCKER|mcr.microsoft.com/azure-functions/python:2.0-python3.6-appservice"
         }
       },
       "resources": [
